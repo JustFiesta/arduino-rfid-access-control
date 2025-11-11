@@ -37,7 +37,7 @@ Made as final project for microcontrollers assigment as two person team.
 
 ## Made by
 
-[JustFiesta](https://github.com/JustFiesta/)
+[JustFiesta](https://github.com/JustFiesta/)  
 [gubbl3bum](https://github.com/gubbl3bum/)
 
 ## Possible future extensions
