@@ -1,1 +1,4 @@
-
+MFRC522@1.4.10
+Keypad@3.1.1
+LiquidCrystal_I2C@1.1.2
+RTClib@2.1.4
