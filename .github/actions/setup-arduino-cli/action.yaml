@@ -1,18 +1,20 @@
 name: 'Arduino CLI Setup'
 description: 'Download and setup Arduino CLI'
 
+inputs: {}
+
 runs:
   using: "composite"
   steps:
     - name: Setup Arduino CLI
       uses: arduino/setup-arduino-cli@v1
-
+      
     - name: Install core
       shell: bash
       run: |
         arduino-cli core update-index
         arduino-cli core install arduino:avr
-
+        
     - name: Install libraries
       shell: bash
       run: |
