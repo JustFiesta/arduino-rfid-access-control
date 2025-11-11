@@ -4,6 +4,17 @@ College educational project for Arduino UNO: a user authorization system using a
 
 Made as final project for microcontrollers assigment as two person team.
 
+## CI/CD
+
+This repo also has simple workflows to watch over code and to give us intel if it is healthy.
+
+- simple compile with Arduino CLI (composite Action) on main/PR
+- release on tag push (with 'v') to GH Realeases
+
+### Status
+
+[![CI](https://github.com/JustFiesta/arduino-rfid-access-control/actions/workflows/ci.yml/badge.svg)](https://github.com/JustFiesta/arduino-rfid-access-control/actions/workflows/ci.yml) [![CD](https://github.com/JustFiesta/arduino-rfid-access-control/actions/workflows/cd.yaml/badge.svg)](https://github.com/JustFiesta/arduino-rfid-access-control/actions/workflows/cd.yaml)
+
 ## Components used
 
 - Arduino UNO-like board (r3)
