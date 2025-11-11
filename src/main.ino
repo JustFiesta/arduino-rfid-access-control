@@ -1,4 +1,4 @@
-// Reapply 2
+// Reapply 3
 // RFID (simulated by button) + PIN demo 
 // Keypad 4x4: rows -> A0,A1,A2,A3 ; cols -> 2,3,4,5
 // I2C LCD: A4(SDA), A5(SCL) (address 0x27 typical)
