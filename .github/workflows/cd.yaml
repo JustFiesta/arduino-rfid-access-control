@@ -17,23 +17,8 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Setup Arduino CLI
-      uses: arduino/setup-arduino-cli@v1
-
-    - name: Install core
-      run: |
-        arduino-cli core update-index
-        arduino-cli core install arduino:avr
-
-    - name: Install libraries
-      run: |
-        if [ -f src/libraries-list.txt ]; then
-          while IFS= read -r library; do
-            if [ -n "$library" ]; then
-              arduino-cli lib install "$library"
-            fi
-          done < src/libraries-list.txt
-        fi
+    - name: Lint Backend Code
+      uses: ./.github/actions/setup-arduino-cli
 
     - name: Build
       run: |
