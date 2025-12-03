@@ -37,6 +37,12 @@ const char* cardNames[] = {
   "User",
 };
 
+// Emotki dla każdego użytkownika (weeb style)
+const char* cardEmojis[] = {
+  "(=^w^=)",      // Admin - kot
+  "(^ω^)",   // User - szczęśliwy
+};
+
 const int numAuthorizedCards = 2;
 
 void setup() {
@@ -47,7 +53,7 @@ void setup() {
   // --- RFID ---
   SPI.begin();
   mfrc522.PCD_Init();
-  delay(30);
+  delay(100);
 
   Serial.println(F("\n--- RFID Status ---"));
   byte version = mfrc522.PCD_ReadRegister(mfrc522.VersionReg);
@@ -126,12 +132,12 @@ void setup() {
   
   // Krótki test buzzera
   tone(BUZZER_PIN, 1000, 100);
-  delay(50);
+  delay(150);
 
   Serial.println(F("\n=== System Ready ==="));
   Serial.println(F("Waiting for RFID card...\n"));
   
-  delay(100);
+  delay(2000);
   
   // Ekran główny
   showMainScreen();
@@ -149,40 +155,73 @@ void showMainScreen() {
 
 // === FUNKCJE BUZZERA ===
 
-// Dźwięk powitalny (dostęp przyznany)
+// Dźwięk powitalny (dostęp przyznany) - anime "kyun~" sound
 void playAccessGranted() {
-  tone(BUZZER_PIN, 1000, 100);
+  // Cute sparkle notification
+  tone(BUZZER_PIN, 1319, 60);  // E6
+  delay(70);
+  tone(BUZZER_PIN, 1568, 60);  // G6
+  delay(70);
+  tone(BUZZER_PIN, 1976, 60);  // B6
+  delay(70);
+  tone(BUZZER_PIN, 2637, 100); // E7 - high sparkle
   delay(120);
-  tone(BUZZER_PIN, 1500, 100);
-  delay(120);
-  tone(BUZZER_PIN, 2000, 150);
-  delay(200);
+  tone(BUZZER_PIN, 2093, 80);  // C7
+  delay(100);
+  tone(BUZZER_PIN, 2637, 120); // E7 again
+  delay(150);
 }
 
-// Dźwięk otwarcia drzwi
+// Dźwięk otwarcia drzwi - victory fanfare (FF style)
 void playDoorOpen() {
-  tone(BUZZER_PIN, 800, 200);
-  delay(250);
-  tone(BUZZER_PIN, 1200, 200);
-  delay(250);
+  // Epic win melody
+  tone(BUZZER_PIN, 1047, 120); // C6
+  delay(140);
+  tone(BUZZER_PIN, 1047, 120); // C6
+  delay(140);
+  tone(BUZZER_PIN, 1047, 120); // C6
+  delay(140);
+  tone(BUZZER_PIN, 1047, 200); // C6 sustained
+  delay(220);
+  tone(BUZZER_PIN, 1319, 120); // E6
+  delay(140);
+  tone(BUZZER_PIN, 1568, 300); // G6 - triumphant!
+  delay(350);
 }
 
-// Dźwięk zamknięcia drzwi
+// Dźwięk zamknięcia drzwi - "mata ne~" goodbye
 void playDoorClose() {
-  tone(BUZZER_PIN, 1200, 150);
-  delay(200);
-  tone(BUZZER_PIN, 800, 150);
-  delay(200);
+  // Gentle descending lullaby
+  tone(BUZZER_PIN, 1568, 150); // G6
+  delay(170);
+  tone(BUZZER_PIN, 1319, 150); // E6
+  delay(170);
+  tone(BUZZER_PIN, 1175, 150); // D6
+  delay(170);
+  tone(BUZZER_PIN, 1047, 250); // C6 - soft ending
+  delay(280);
+  tone(BUZZER_PIN, 988, 150);  // B5
+  delay(170);
 }
 
-// Dźwięk błędu (dostęp odmówiony)
+// Dźwięk błędu (dostęp odmówiony) - "dame dame" (nope nope)
 void playAccessDenied() {
-  for(int i = 0; i < 3; i++) {
-    tone(BUZZER_PIN, 200, 150);
-    delay(200);
-    noTone(BUZZER_PIN);
-    // delay(100);
-  }
+  // Sad descending "wrong answer" buzzer
+  tone(BUZZER_PIN, 587, 200);  // D5
+  delay(220);
+  tone(BUZZER_PIN, 494, 200);  // B4
+  delay(220);
+  tone(BUZZER_PIN, 440, 200);  // A4
+  delay(220);
+  tone(BUZZER_PIN, 330, 400);  // E4 - sad low note
+  delay(450);
+  noTone(BUZZER_PIN);
+  delay(150);
+  // Dramatic pause then...
+  tone(BUZZER_PIN, 294, 150);  // D4 - even sadder
+  delay(180);
+  tone(BUZZER_PIN, 262, 300);  // C4 - defeated
+  delay(350);
 }
 
 void loop() {
@@ -234,22 +273,33 @@ void loop() {
     // Dźwięk powitania
     playAccessGranted();
     
-    // OLED - Witaj
+    // OLED - Animacja powitania (weeb style)
     display.clearDisplay();
+    display.setTextSize(1);
+    display.setCursor(20, 2);
+    display.println(F("~ Welcome ~"));
+    
     display.setTextSize(2);
-    display.setCursor(0, 10);
-    display.println(F("Welcome,"));
-    display.setCursor(0, 35);
-    display.println(cardNames[cardIndex]);
+    display.setCursor(10, 20);
+    display.print(cardNames[cardIndex]);
+    display.println(F("-san"));
+    
+    display.setTextSize(1);
+    display.setCursor(25, 45);
+    display.println(cardEmojis[cardIndex]);
     display.display();
     
     delay(1000);
     
-    // OLED - Otwieranie
+    // OLED - Otwieranie (fancy)
     display.clearDisplay();
     display.setTextSize(1);
-    display.setCursor(0, 20);
-    display.println(F("Opening door..."));
+    display.setCursor(15, 10);
+    display.println(F(">> Unlocking <<"));
+    display.setCursor(30, 28);
+    display.println(F("Door..."));
+    display.setCursor(25, 45);
+    display.println(F("( -_-)>"));
     display.display();
     
     // OTWÓRZ SERWO + Dźwięk
@@ -261,8 +311,12 @@ void loop() {
     // ZAMKNIJ SERWO + Dźwięk
     display.clearDisplay();
     display.setTextSize(1);
-    display.setCursor(0, 20);
-    display.println(F("Closing door..."));
+    display.setCursor(15, 10);
+    display.println(F(">> Locking <<"));
+    display.setCursor(25, 28);
+    display.println(F("Stay safe!"));
+    display.setCursor(30, 45);
+    display.println(F("(^_^)b"));
     display.display();
     
     Serial.println(F(">>> Closing lock (0°)"));
@@ -287,8 +341,8 @@ void loop() {
     display.println(F("ACCESS"));
     display.println(F("DENIED!"));
     display.setTextSize(1);
-    display.setCursor(0, 50);
-    display.println(F("Unknown card"));
+    display.setCursor(25, 48);
+    display.println(F("(T_T)"));
     display.display();
     
     delay(1500);
