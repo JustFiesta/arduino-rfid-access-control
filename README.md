@@ -27,8 +27,8 @@ This repo also has simple workflows to watch over code and to give us intel if i
 
 - user presents an RFID card.
 - board reads the card's UID and verifies it against a stored credentials.
-- if the card is recognized, the system opens servo with LCD info.
-- LCD displays system status messages throughout the process.
+- if the card is recognized, the system opens servo with OLED info.
+- OLED displays system status messages throughout the process.
 
 ## Used Arduino IDE libraries
 
