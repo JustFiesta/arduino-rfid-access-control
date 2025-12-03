@@ -1,6 +1,6 @@
 # RFID Access Control System
 
-College educational project for Arduino UNO: a user authorization system using an RFID card and a PIN keypad.
+College educational project for Arduino UNO: a user authorization system using an RFID card.
 
 Made as final project for microcontrollers assigment as two person team.
 
@@ -19,9 +19,8 @@ This repo also has simple workflows to watch over code and to give us intel if i
 
 - Arduino UNO-like board (r3)
 - RFID RC522 Module
-- LCD Display with I2C conventer module
+- OLED Display 
 - Buzzer
-- LED (Green/Red)
 - Servo
 
 ## Functionality
