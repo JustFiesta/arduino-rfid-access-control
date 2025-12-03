@@ -23,6 +23,9 @@ MFRC522 mfrc522(SS_PIN, RST_PIN);
 #define SERVO_PIN 6
 Servo myservo;
 
+// BUZZER
+#define BUZZER_PIN 5
+
 // AUTORYZOWANE KARTY - używamy char[] zamiast String (oszczędność RAM)
 const char* authorizedCards[] = {
   "007:7B:2A:25",  // Karta biala
@@ -44,7 +47,7 @@ void setup() {
   // --- RFID ---
   SPI.begin();
   mfrc522.PCD_Init();
-  delay(100);
+  delay(30);
 
   Serial.println(F("\n--- RFID Status ---"));
   byte version = mfrc522.PCD_ReadRegister(mfrc522.VersionReg);
@@ -115,10 +118,20 @@ void setup() {
   Serial.println(F("\n--- Servo Status ---"));
   Serial.println(F("Servo: LOCKED (0°)"));
 
+  // --- BUZZER ---
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
+  Serial.println(F("\n--- Buzzer Status ---"));
+  Serial.println(F("Buzzer: Ready"));
+  
+  // Krótki test buzzera
+  tone(BUZZER_PIN, 1000, 100);
+  delay(50);
+
   Serial.println(F("\n=== System Ready ==="));
   Serial.println(F("Waiting for RFID card...\n"));
   
-  delay(2000);
+  delay(100);
   
   // Ekran główny
   showMainScreen();
@@ -132,6 +145,44 @@ void showMainScreen() {
   display.setCursor(0, 30);
   display.println(F("to enter..."));
   display.display();
+}
+
+// === FUNKCJE BUZZERA ===
+
+// Dźwięk powitalny (dostęp przyznany)
+void playAccessGranted() {
+  tone(BUZZER_PIN, 1000, 100);
+  delay(120);
+  tone(BUZZER_PIN, 1500, 100);
+  delay(120);
+  tone(BUZZER_PIN, 2000, 150);
+  delay(200);
+}
+
+// Dźwięk otwarcia drzwi
+void playDoorOpen() {
+  tone(BUZZER_PIN, 800, 200);
+  delay(250);
+  tone(BUZZER_PIN, 1200, 200);
+  delay(250);
+}
+
+// Dźwięk zamknięcia drzwi
+void playDoorClose() {
+  tone(BUZZER_PIN, 1200, 150);
+  delay(200);
+  tone(BUZZER_PIN, 800, 150);
+  delay(200);
+}
+
+// Dźwięk błędu (dostęp odmówiony)
+void playAccessDenied() {
+  for(int i = 0; i < 3; i++) {
+    tone(BUZZER_PIN, 200, 150);
+    delay(200);
+    noTone(BUZZER_PIN);
+    // delay(100);
+  }
 }
 
 void loop() {
@@ -180,6 +231,9 @@ void loop() {
     Serial.print(F("ACCESS GRANTED for: "));
     Serial.println(cardNames[cardIndex]);
     
+    // Dźwięk powitania
+    playAccessGranted();
+    
     // OLED - Witaj
     display.clearDisplay();
     display.setTextSize(2);
@@ -189,7 +243,7 @@ void loop() {
     display.println(cardNames[cardIndex]);
     display.display();
     
-    delay(1500);
+    delay(1000);
     
     // OLED - Otwieranie
     display.clearDisplay();
@@ -198,12 +252,13 @@ void loop() {
     display.println(F("Opening door..."));
     display.display();
     
-    // OTWÓRZ SERWO
+    // OTWÓRZ SERWO + Dźwięk
     Serial.println(F(">>> Opening lock (90°)"));
+    playDoorOpen();
     myservo.write(90);
-    delay(3000);
+    delay(500);
     
-    // ZAMKNIJ SERWO
+    // ZAMKNIJ SERWO + Dźwięk
     display.clearDisplay();
     display.setTextSize(1);
     display.setCursor(0, 20);
@@ -211,15 +266,19 @@ void loop() {
     display.display();
     
     Serial.println(F(">>> Closing lock (0°)"));
+    playDoorClose();
     myservo.write(0);
     
-    delay(1000);
+    delay(500);
     
   } else {
     // DOSTĘP ODMÓWIONY
     Serial.println(F("ACCESS DENIED!"));
     Serial.print(F("Unknown card: "));
     Serial.println(uidString);
+    
+    // Dźwięk błędu
+    playAccessDenied();
     
     // OLED - Odmowa
     display.clearDisplay();
@@ -232,7 +291,7 @@ void loop() {
     display.println(F("Unknown card"));
     display.display();
     
-    delay(2000);
+    delay(1500);
   }
 
   Serial.println(F("==================\n"));
@@ -241,5 +300,5 @@ void loop() {
   mfrc522.PCD_StopCrypto1();
 
   showMainScreen();
-  delay(1000);
+  delay(500);
 }
